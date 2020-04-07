@@ -1,0 +1,63 @@
+
+
+int led1 = A5; 
+int led2 = D7; 
+
+int photoresistor = A0;
+int value;
+String lightLevel = "LOW";
+const int threshold = 20;
+
+void setup() {
+
+  
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(photoresistor, INPUT);
+
+}
+
+
+void loop() {
+  
+  value = analogRead(photoresistor);
+  
+  if(value <= threshold) // not enough light
+  {
+      if(lightLevel == "HIGH") //will change from HIGH to LOW to signal light has suddenly is no longer hitting the sensor
+      {
+        digitalWrite(led1,HIGH);
+        digitalWrite(led2,HIGH);
+        lightLevel = "LOW";
+        Particle.publish("lightLevel",lightLevel,PRIVATE);
+      }
+      else
+      {
+        digitalWrite(led1,LOW);
+        digitalWrite(led2,LOW);
+      }
+        
+  }
+  else
+  {
+      if(lightLevel == "LOW") //will change from LOW to HIGH to signal lght has suddenly hit the sensor
+      {
+        digitalWrite(led1,HIGH);
+        digitalWrite(led2,HIGH);
+        lightLevel = "HIGH";
+        Particle.publish("lightLevel",lightLevel,PRIVATE);
+      }
+      else
+      {
+        digitalWrite(led1,LOW);
+        digitalWrite(led2,LOW);
+      }
+      
+      
+  }
+ 
+
+    delay(5000);
+  
+}
+
